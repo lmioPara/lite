@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ScrollRefresh</title>
+    <style>
+        .inner {
+
+        }
+
+        .item {
+            height: 800px;
+            border-bottom: 1px solid #000;
+            background: #abccc4;
+        }
+    </style>
+</head>
+<body>
+<div class="inner">
+    <div class="item">1</div>
+</div>
+</body>
+<script src="http://apps.bdimg.com/libs/jquery/1.10.0/jquery.min.js"></script>
+<script>
+    $(function () {
+        var count = 1;
+        var block = true;
+        var limit = 50;
+        $(window).on('scroll', function (e) {
+            e.preventDefault();
+            var sc = $(this).scrollTop() - ($('.inner').height() - $(this).height());
+            if (sc + limit >= 0) {
+                if (block) {
+                    block = false;
+                    setTimeout(function () {
+                        $('.inner').append($('<div class="item">' + (count += 1) + '</div>'));
+                        block = true;
+                    }, 1000);
+                }
+            }
+        })
+    });
+</script>
+</html>

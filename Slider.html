@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Slider</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .content {
+            margin: 50px auto;
+            width: 400px;
+            height: 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .item-list {
+            position: absolute;
+            left: 0;
+            transition: all .3s;
+            list-style: none;
+            z-index: 1;
+        }
+
+        .item-list:after {
+            content: "";
+            clear: both;
+            display: block;
+            width: 0;
+            height: 0;
+        }
+
+        .item {
+            position: relative;
+            float: left;
+        }
+
+        .item-inner {
+            display: block;
+            width: 80px;
+            height: 80px;
+            box-sizing: border-box;
+            border: 1px solid blue;
+            background: red;
+        }
+
+        .slider-btn {
+            display: block;
+            position: absolute;
+            width: 15px;
+            height: 40px;
+            line-height: 36px;
+            color: #ccc;
+            font-size: 14px;
+            background: rgba(122, 122, 122, .3);
+            top: 20px;
+            z-index: 10;
+            cursor: pointer;
+        }
+
+        .prev {
+            left: 0;
+        }
+
+        .next {
+            right: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div class="content">
+    <span class="slider-btn prev"><</span>
+    <span class="slider-btn next">></span>
+    <ul class="item-list">
+        <li class="item"><span class="item-inner">1</span></li>
+        <li class="item"><span class="item-inner">2</span></li>
+        <li class="item"><span class="item-inner">3</span></li>
+        <li class="item"><span class="item-inner">4</span></li>
+        <li class="item"><span class="item-inner">5</span></li>
+        <li class="item"><span class="item-inner">6</span></li>
+        <li class="item"><span class="item-inner">7</span></li>
+        <li class="item"><span class="item-inner">8</span></li>
+        <li class="item"><span class="item-inner">9</span></li>
+        <li class="item"><span class="item-inner">0</span></li>
+    </ul>
+</div>
+<script src="http://apps.bdimg.com/libs/jquery/1.10.0/jquery.min.js"></script>
+<script>
+
+    var a = function () {
+        var b = 100;
+        var c = function () {
+            b++;
+            console.log(b);
+        };
+        c();
+        console.log(b);
+    };
+    a();
+
+
+
+    $(function () {
+        var option = {
+            currIndex: 0,
+            length: 10,
+            isAuto: true,
+            step: 5,
+            isLoop: true,
+            isReverse: false,
+            onAnimate: false,
+            interval: 2000
+        };
+
+        var el = {
+            $ul: $('.item-list'),
+            $li: $('.item'),
+            $btn: $('.slider-btn')
+        };
+
+        var init = function () {
+            option.length = el.$li.length;
+            el.$ul.css({'width': option.length * 80 + 'px'});
+
+            el.$btn.on('mouseenter', function () {
+                option.isAuto = false;
+            });
+
+            el.$btn.on('mouseleave', function () {
+                option.isAuto = true;
+            });
+
+            el.$btn.on('click', function () {
+                if (!option.onAnimate) {
+                    option.onAnimate = true;
+                    if ($(this).hasClass('prev')) {
+                        setLoop(false, function () {
+                            option.onAnimate = false;
+                        });
+                    } else {
+                        setLoop(true, function () {
+                            option.onAnimate = false;
+                        });
+                    }
+                }
+            });
+        };
+
+        var setAnimate = function (index) {
+            el.$ul.css({'left': '-' + index * 80 + 'px'})
+        };
+
+        var setIndex = function () {
+            if (option.currIndex < option.length - option.step) {
+                option.currIndex++;
+                setAnimate(option.currIndex);
+            }
+        };
+
+        init();
+        window.mailInterval = window.setInterval(function () {
+            if (option.isAuto) {
+                if (option.isLoop) {
+                    setLoop(option.isReverse);
+                } else {
+                    setIndex();
+                }
+            }
+        }, option.interval);
+
+        //loop
+        var setLoop = function (mutation, cbFn) {
+            if (mutation) {
+                el.$li.css({right: 80});
+                $('.item').last().prependTo(el.$ul);
+                window.reverseOut = window.setTimeout(function () {
+                    el.$li.animate({right: 0}, 300);
+                    window.clearTimeout(reverseOut);
+                    if (cbFn) {
+                        cbFn();
+                    }
+                }, 200)
+            } else {
+                el.$li.animate({right: 80}, 300);
+                window.out = window.setTimeout(function () {
+                    el.$li.css({right: 0});
+                    $('.item').first().appendTo(el.$ul);
+                    window.clearTimeout(out);
+                    if (cbFn) {
+                        cbFn();
+                    }
+                }, 500);
+            }
+        };
+
+    });
+</script>
+</body>
+</html>
