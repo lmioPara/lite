@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>tree</title>
+</head>
+<body>
+<div>
+
+</div>
+<script src="http://apps.bdimg.com/libs/jquery/1.10.0/jquery.min.js"></script>
+<script>
+  $(function () {
+    let start = new Date();
+
+    let treeCell = function (num) {
+      return {pid: parseInt(num / 10), num: num, level: getLevel(num)};
+    };
+    use strct
+    /**
+     *
+     * @param num
+     * @param count
+     * @returns {number}
+     */
+    let getLevel = function (num, count = 1) {
+      let temp = parseInt(num / 10);
+      if (temp > 0) {
+        count++;
+        return getLevel(temp, count);
+      } else {
+        return count;
+      }
+    };
+
+    /**
+     *
+     * @param arr
+     * @returns {Array}
+     */
+    function generator(arr = []) {
+      for (let i = 1; i <= 999; i++) {
+        arr.push(new treeCell(i));
+      }
+      return arr;
+    }
+
+    console.log(generator());
+    let end = new Date();
+
+    console.log(end - start);
+  });
+</script>
+</body>
+</html>
